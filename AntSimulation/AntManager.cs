@@ -7,9 +7,9 @@ namespace AntSimulation;
 
 public class AntManager : Manager
 {
-    public List<Ant?> Ants = new List<Ant?>();
-    private static readonly Random Random = new Random();
-    private static AntManager _instance;
+    public List<Ant?> Ants = new();
+    private static readonly Random Random = new();
+    private static AntManager? _instance;
     private FoodManager foodManager = FoodManager.Instance;
     private PheromoneManager pheromoneManager = PheromoneManager.Instance;
     private int _pheromoneCooldown = GlobalVariables.PheromoneCooldown;
@@ -17,10 +17,7 @@ public class AntManager : Manager
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = new AntManager();
-            }
+            _instance ??= new AntManager();
             return _instance;
         }
     }
@@ -46,26 +43,28 @@ public class AntManager : Manager
     {
         foreach (var ant in Ants) // Chasing food and pheromones
         {
-            
-            if (!ant.HasFood && !foodManager.IsEmpty())
+            if (ant != null)
             {
-                TryToChaseFood(ant);
-            }
+                if (!ant.HasFood && !foodManager.IsEmpty())
+                {
+                    TryToChaseFood(ant);
+                }
 
-            if (ant.WanderingCounter <= 0 && Random.NextDouble() > GlobalVariables.PheromoneFollwingDecisionThreshold)
-            {
-                ant.WanderingCounter = GlobalVariables.AntWanderingCounter;
+                if (ant.WanderingCounter <= 0 && Random.NextDouble() > GlobalVariables.PheromoneFollwingDecisionThreshold)
+                {
+                    ant.WanderingCounter = GlobalVariables.AntWanderingCounter;
+                }
+                else if (ant.Destination.Equals(Vector2.Zero) && ant.WanderingCounter <= 0)
+                {
+                    TryToChasePheromone(ant);
+                }
+                ant.WanderingCounter--;
+                ant.Move();
             }
-            else if (ant.Destination.Equals(Vector2.Zero) && ant.WanderingCounter <= 0)
-            {
-                TryToChasePheromone(ant);
-            }
-            ant.WanderingCounter--;
-            ant.Move();
         }
         foreach (var ant in Ants) // Verifying if food has been picked up
         {
-            if (ant.ChasedFoodIndex != -1 && (foodManager.IsNull(ant.ChasedFoodIndex) || ant.ChasedFoodId == foodManager.GetFoodId(ant.ChasedFoodIndex)))
+            if (ant != null && ant.ChasedFoodIndex != -1 && (foodManager.IsNull(ant.ChasedFoodIndex) || ant.ChasedFoodId == foodManager.GetFoodId(ant.ChasedFoodIndex)))
             {
                 ant.ChasedFoodIndex = -1;
                 ant.ChasedFoodId = -1;
@@ -78,7 +77,10 @@ public class AntManager : Manager
         {
             foreach (var ant in Ants) // Leaving pheromones
             {
-                pheromoneManager.AddIntensity(ant.Pos, ant.HasFood ? 1 : 0, GlobalVariables.PheromoneAddIntensity);
+                if (ant != null)
+                {
+                    pheromoneManager.AddIntensity(ant.Pos, ant.HasFood ? 1 : 0, GlobalVariables.PheromoneAddIntensity);
+                }
             }
             _pheromoneCooldown = GlobalVariables.PheromoneCooldown;
         }

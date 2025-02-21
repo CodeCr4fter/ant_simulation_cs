@@ -7,16 +7,13 @@ namespace AntSimulation;
 
 public class PheromoneManager : Manager
 {
-    public Grid Grid = new Grid();
-    private static PheromoneManager _instance;
+    public Grid Grid = new();
+    private static PheromoneManager? _instance;
     public static PheromoneManager Instance
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = new PheromoneManager();
-            }
+            _instance ??= new PheromoneManager();
             return _instance;
         }
     }

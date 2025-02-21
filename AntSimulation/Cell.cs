@@ -4,7 +4,7 @@ namespace AntSimulation;
 
 public class Cell
 {
-    protected List<int> PheromoneIntensities = new List<int>();
+    protected List<int> PheromoneIntensities = new();
     
     public Cell(int typesCount)
     {

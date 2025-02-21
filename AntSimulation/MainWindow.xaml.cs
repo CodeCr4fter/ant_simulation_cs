@@ -51,17 +51,19 @@ namespace AntSimulation
             pheromoneManager = PheromoneManager.Instance;
             antManager.CreateAnts(antCount, GlobalVariables.AntHill);
             // Timer to update simulation
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000 / 60);
+            timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(1000 / 60)
+            };
             timer.Tick += UpdateSimulation;
             timer.Start();
         }
 
-        private void UpdateSimulation(object sender, EventArgs e)
+        private void UpdateSimulation(object? sender, EventArgs e)
         {
             // Move ants
             antManager.NextFrame();
-            
+
             pheromoneManager.Decay();
             foodManager.Clear();
             // Redraw ants
@@ -110,13 +112,18 @@ namespace AntSimulation
                         }
                     }
                 }
-                foreach (var food in foods)
-                {
-                    DrawPoint(food.Pos, 2, Colors.Red);
+                foreach (var food in foods) {
+                    if (food != null)
+                    {
+                        DrawPoint(food.Pos, 2, Colors.Red);
+                    }
                 }
                 foreach (var ant in ants)
                 {
-                    DrawPoint(ant.Pos, 3, ant.HasFood? Colors.Yellow : Colors.White);
+                    if (ant != null)
+                    { 
+                        DrawPoint(ant.Pos, 3, ant.HasFood? Colors.Yellow : Colors.White);
+                    }
                 }
                 bitmap.WritePixels(new Int32Rect(0, 0, width, height), pixels, width * 4, 0);
             }
