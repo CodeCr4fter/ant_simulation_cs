@@ -6,19 +6,16 @@ namespace AntSimulation;
 
 public class FoodManager : Manager
 {
-    public List<Food?> Foods = new List<Food?>();
-    private static readonly Random Random = new Random();
-    private static FoodManager _instance;
+    public List<Food?> Foods = new();
+    private static readonly Random Random = new();
+    private static FoodManager? _instance;
     private int _nextFoodId;
     public int FoodCount { get; private set; }
     public static FoodManager Instance
     {
         get
         {
-            if (_instance == null)
-            {
-                _instance = new FoodManager();
-            }
+            _instance ??= new FoodManager();
             return _instance;
         }
     }
@@ -33,7 +30,7 @@ public class FoodManager : Manager
         for (int i = 0; i < Foods.Count; i++)
         {
             if (Foods[i] == null) continue;
-            Food food = Foods[i];
+            Food food = Foods[i]!;
             double curDist = Vector2.DistanceSquared(food.Pos, antPos);
             if (curDist < minDistance)
             {
@@ -41,7 +38,7 @@ public class FoodManager : Manager
                 closestFoodIndex = i;
             }
         }
-        return (minDistance, closestFoodIndex, Foods[closestFoodIndex].Pos);
+        return (minDistance, closestFoodIndex, Foods[closestFoodIndex]!.Pos);
     }
     public void CreateFood(int foodCount, Vector2 pos, int radius = 0)
     {
@@ -80,6 +77,6 @@ public class FoodManager : Manager
     }
     public int GetFoodId(int foodIndex)
     {
-        return Foods[foodIndex].Id;
+        return Foods[foodIndex]!.Id;
     }
 }
